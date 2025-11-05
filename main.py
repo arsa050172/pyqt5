@@ -89,21 +89,29 @@ class PembukuanApp(QWidget):
         """)
         # === Tambahkan logo dan keterangan di bawah sidebar ===
         from PyQt5.QtGui import QPixmap
-        sidebar.addStretch(2) 
+        sidebar.addStretch(3) 
         logo_bottom = QLabel()
-        logo_bottom.setPixmap(QPixmap("logo.png").scaled(100, 100, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        logo_bottom.setPixmap(QPixmap("logo.ico").scaled(100, 100, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         logo_bottom.setAlignment(Qt.AlignCenter)
         lbl_ket = QLabel("AsratChannel 2025")
-        lbl_ket.setAlignment(Qt.AlignCenter)
-        lbl_ket.setStyleSheet("""
+        lbl_ket1 = QLabel("Hp/WA.0878-6632-7599")
+        lbl_ket2 = QLabel("Nuansa Kori IX/12 Denpasar")
+        # === Style untuk semua label ===
+        style_info = """
             QLabel {
                 color: #01579B;
+                font-family: 'Segoe UI', Arial, sans-serif;
                 font-weight: bold;
                 font-size: 10pt;
             }
-        """)
+        """
+        for lbl in (lbl_ket, lbl_ket1, lbl_ket2):
+            lbl.setAlignment(Qt.AlignCenter)
+            lbl.setStyleSheet(style_info)
         sidebar.addWidget(logo_bottom)
         sidebar.addWidget(lbl_ket)
+        sidebar.addWidget(lbl_ket1)
+        sidebar.addWidget(lbl_ket2)
         sidebar.addSpacing(10)
 
         # Tombol Exit tetap paling bawah
