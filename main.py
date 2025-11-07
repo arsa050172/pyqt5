@@ -345,6 +345,7 @@ class PembukuanApp(QWidget):
                 }).execute()
 
                 QMessageBox.information(self, "Sukses", "Data berhasil ditambahkan!")
+                self.perbarui_semua_saldo()
                 self.load_data()
 
             except Exception as e:
@@ -457,7 +458,7 @@ class PembukuanApp(QWidget):
                     supabase.table("pembukuan").update({
                         "total_saldo": saldo_berjalan
                     }).eq("id", item["id"]).execute()
-
+                self.perbarui_semua_saldo()
                 self.load_data()
 
         except Exception as e:
@@ -513,12 +514,34 @@ class PembukuanApp(QWidget):
                 }).eq("id", item["id"]).execute()
 
             QMessageBox.information(self, "Sukses", "Data berhasil dihapus!")
+            self.perbarui_semua_saldo()
             self.load_data()
 
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Gagal menghapus data: {e}")
     
-    
+    # ====================================================
+    # PERBARUI SEMUA SALDO
+    # ====================================================
+    def perbarui_semua_saldo(self):
+        """Rekalkulasi semua total_saldo berdasarkan urutan tanggal + id."""
+        try:
+            data = supabase.table("pembukuan") \
+                .select("id, tanggal, debet, kredit") \
+                .order("tanggal", desc=False) \
+                .order("id", desc=False) \
+                .execute().data
+
+            saldo_berjalan = 0
+            for item in data:
+                saldo_berjalan += float(item["debet"]) - float(item["kredit"])
+                supabase.table("pembukuan").update({
+                    "total_saldo": saldo_berjalan
+                }).eq("id", item["id"]).execute()
+
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Gagal memperbarui saldo: {e}")
+
     # ====================================================
     # LIHAT PERIODIK
     # ====================================================
